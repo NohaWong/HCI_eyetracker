@@ -11,6 +11,7 @@
 #include <CGAL/Voronoi_diagram_2.h>
 #include <CGAL/Delaunay_triangulation_adaptation_traits_2.h>
 #include <CGAL/Delaunay_triangulation_adaptation_policies_2.h>
+#include <CGAL/Voronoi_diagram_2/
 
 
 // typedefs for defining the adaptor

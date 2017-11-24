@@ -2,6 +2,7 @@
 
 voronoi::voronoi()
 {
+    CGAL::make_vo
 }
 
 
