@@ -1,4 +1,5 @@
-HCI/*.user
+*.user
 *.o
 HCI/HCI
 *.autosave
+HCI/HCI.pro.user
