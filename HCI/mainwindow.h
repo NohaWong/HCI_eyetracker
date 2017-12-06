@@ -18,9 +18,11 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    vector<Point> getAllPos();
 
 private:
     Ui::MainWindow *ui;
+    Point getCenterButton(QPushButton *button);
 
 };
 
