@@ -6,7 +6,7 @@ Point::Point(float x, float y)
     this->y=y,
 }
 
-Point::copy()
+Point Point::copy()
 {
     return new Point(this->x,this->y);
 }
@@ -30,5 +30,7 @@ vector<float> Point::mediatrice(Point pt)
 
     droite.push_back(pt.x-this->x);
     droite.push_back(pt.y-this->y);
-    droite.push_back(pt.x-this->x);
+    droite.push_back(-(droite.at(1)*milieu.y + droite.at(0)*milieu.x));
+
+    return droite;
 }
