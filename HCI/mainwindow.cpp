@@ -16,9 +16,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-vector<Site_2> MainWindow::getAllPos()
+vector<Point> MainWindow::getAllPos()
 {
-    vector<Site_2> PosButtons;
+    vector<Point> PosButtons;
 
     PosButtons.push_back(getCenterButton(ui->pushButton));
     PosButtons.push_back(getCenterButton(ui->pushButton_2));
@@ -29,15 +29,15 @@ vector<Site_2> MainWindow::getAllPos()
 
 
 
-Site_2 MainWindow::getCenterButton(QPushButton *button)
+Point MainWindow::getCenterButton(QPushButton *button)
 {
 
 
     int x =(button->pos().x() + button->pos().x()+button->width()) /2;
     int y =(button->pos().y() + button->pos().y()+button->width()) /2;
 
-    Site_2 pos; //= new Site_2();
+    Point pt=new Point(x,y); //= new Site_2();
 
-    return pos;
+    return pt;
 
 }
