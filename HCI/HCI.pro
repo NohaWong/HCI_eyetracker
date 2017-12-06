@@ -14,11 +14,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    voronoi.cpp
+    voronoi.cpp \
+    point.cpp
 
 HEADERS  += mainwindow.h \
-    voronoi.h
+    voronoi.h \
+    point.h
 
 FORMS    += mainwindow.ui
 
-LIBS += -lCGAL -lgmp -frounding-math
+LIBS += -lCGAL -lgmp -frounding-math -lm

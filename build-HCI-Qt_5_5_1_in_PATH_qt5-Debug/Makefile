@@ -36,7 +36,7 @@ DISTNAME      = HCI1.0.0
 DISTDIR = /home/noha/HCI_eyetracker/build-HCI-Qt_5_5_1_in_PATH_qt5-Debug/.tmp/HCI1.0.0
 LINK          = g++
 LFLAGS        = -m64
-LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -lCGAL -lgmp -frounding-math -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -lCGAL -lgmp -frounding-math -lm -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -50,10 +50,12 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ../HCI/main.cpp \
 		../HCI/mainwindow.cpp \
-		../HCI/voronoi.cpp moc_mainwindow.cpp
+		../HCI/voronoi.cpp \
+		../HCI/point.cpp moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		voronoi.o \
+		point.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
@@ -112,9 +114,11 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		../HCI/HCI.pro ../HCI/mainwindow.h \
-		../HCI/voronoi.h ../HCI/main.cpp \
+		../HCI/voronoi.h \
+		../HCI/point.h ../HCI/main.cpp \
 		../HCI/mainwindow.cpp \
-		../HCI/voronoi.cpp
+		../HCI/voronoi.cpp \
+		../HCI/point.cpp
 QMAKE_TARGET  = HCI
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = HCI
@@ -280,8 +284,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../HCI/mainwindow.h ../HCI/voronoi.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../HCI/main.cpp ../HCI/mainwindow.cpp ../HCI/voronoi.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../HCI/mainwindow.h ../HCI/voronoi.h ../HCI/point.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../HCI/main.cpp ../HCI/mainwindow.cpp ../HCI/voronoi.cpp ../HCI/point.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../HCI/mainwindow.ui $(DISTDIR)/
 
 
@@ -308,7 +312,8 @@ compiler_rcc_clean:
 compiler_moc_header_make_all: moc_mainwindow.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp
-moc_mainwindow.cpp: ../HCI/mainwindow.h
+moc_mainwindow.cpp: ../HCI/voronoi.h \
+		../HCI/mainwindow.h
 	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/noha/HCI_eyetracker/HCI -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../HCI/mainwindow.h -o moc_mainwindow.cpp
 
 compiler_moc_source_make_all:
@@ -329,15 +334,20 @@ compiler_clean: compiler_moc_header_clean compiler_uic_clean
 
 ####### Compile
 
-main.o: ../HCI/main.cpp ../HCI/mainwindow.h
+main.o: ../HCI/main.cpp ../HCI/mainwindow.h \
+		../HCI/voronoi.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../HCI/main.cpp
 
 mainwindow.o: ../HCI/mainwindow.cpp ../HCI/mainwindow.h \
+		../HCI/voronoi.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../HCI/mainwindow.cpp
 
 voronoi.o: ../HCI/voronoi.cpp ../HCI/voronoi.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o voronoi.o ../HCI/voronoi.cpp
+
+point.o: ../HCI/point.cpp ../HCI/point.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o point.o ../HCI/point.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
