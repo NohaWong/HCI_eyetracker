@@ -11,8 +11,8 @@ class Point
 public:
     Point(float x, float y);
     Point copy();
-    float distance_to(Point pt);
-    float per_product(Point p2);
+    float distanceTo(Point pt);
+    float perProduct(Point p2);
     vector<float> mediatrice(Point pt);
     float x;
     float y;

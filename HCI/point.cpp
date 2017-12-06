@@ -11,14 +11,14 @@ Point Point::copy()
     return Point(x,y);
 }
 
-float Point::distance_to(Point pt)
+float Point::distanceTo(Point pt)
 {
     float dx = x-pt.x;
     float dy = y-pt.y;
     return sqrt(pow(dx,2)+pow(dy,2));
 }
 
-float Point::per_product(Point p2)
+float Point::perProduct(Point p2)
 {
     return x*y - p2.x*p2.y;
 }
