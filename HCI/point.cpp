@@ -1,6 +1,6 @@
 #include "point.h"
 
-Point::Point(int x, int y)
+Point::Point(float x, float y)
 {
     this->x=x;
     this->y=y,
@@ -28,5 +28,7 @@ vector<float> Point::mediatrice(Point pt)
     std::vector<float> droite;
     float milieu = new Point((this->x+pt.x)/2,(this->y+pt.y)/2);
 
-    droite.add()
+    droite.push_back(pt.x-this->x);
+    droite.push_back(pt.y-this->y);
+    droite.push_back(pt.x-this->x);
 }
