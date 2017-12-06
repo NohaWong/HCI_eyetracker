@@ -9,6 +9,9 @@ using namespace std;
 class Point
 {
 public:
+
+    Point();
+    bool equal(Point pt);
     Point(float x, float y);
     Point copy();
     float distanceTo(Point pt);

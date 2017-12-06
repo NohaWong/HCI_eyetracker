@@ -1,5 +1,13 @@
 #include "point.h"
 
+
+Point::Point()
+{
+    x=0.0;
+    y=0.0;
+}
+
+
 Point::Point(float x, float y)
 {
     this->x=x;
@@ -33,4 +41,9 @@ vector<float> Point::mediatrice(Point pt)
     droite.push_back(-(droite[1]*milieu.y + droite[0]*milieu.x));
 
     return droite;
+}
+
+bool Point::equal(Point pt)
+{
+    return this->x== pt.x && this->y==pt.y;
 }
