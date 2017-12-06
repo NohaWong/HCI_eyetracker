@@ -18,11 +18,11 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    vector<Site_2> getAllPos();
+    vector<Point> getAllPos();
 
 private:
     Ui::MainWindow *ui;
-    Site_2 getCenterButton(QPushButton *button);
+    Point getCenterButton(QPushButton *button);
 };
 
 #endif // MAINWINDOW_H
