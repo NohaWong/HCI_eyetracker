@@ -3,7 +3,8 @@
 
 #include <math.h>
 #include <vector>
-
+#include "droite.h"
+#include <iostream>
 using namespace std;
 
 class Point
@@ -16,9 +17,14 @@ public:
     Point copy();
     float distanceTo(Point pt);
     float perProduct(Point p2);
-    vector<float> mediatrice(Point pt);
+    Droite mediatrice(Point pt);
+    void print();
+
+
     float x;
     float y;
+
+
 
 };
 

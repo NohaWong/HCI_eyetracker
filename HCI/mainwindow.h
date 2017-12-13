@@ -5,6 +5,10 @@
 #include <QPushButton>
 #include <vector>
 #include "voronoi.h"
+#include "point.h"
+#include "qpainter.h"
+
+
 using namespace std;
 
 namespace Ui {
@@ -18,8 +22,10 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
     vector<Point> getAllPos();
 
+    void paintEvent(QPaintEvent *event);
 private:
     Ui::MainWindow *ui;
     Point getCenterButton(QPushButton *button);

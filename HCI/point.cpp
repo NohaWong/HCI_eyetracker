@@ -31,14 +31,15 @@ float Point::perProduct(Point p2)
     return x*y - p2.x*p2.y;
 }
 
-vector<float> Point::mediatrice(Point pt)
+Droite Point::mediatrice(Point pt)
 {
-    std::vector<float> droite;
+    Droite droite;
     Point milieu = Point((x+pt.x)/2,(y+pt.y)/2);
 
-    droite.push_back(pt.x-x);
-    droite.push_back(pt.y-y);
-    droite.push_back(-(droite[1]*milieu.y + droite[0]*milieu.x));
+
+    droite.a = pt.x-x;
+    droite.b = pt.y-y;
+    droite.c = -(droite.b*milieu.y + droite.a*milieu.x);
 
     return droite;
 }
@@ -46,4 +47,8 @@ vector<float> Point::mediatrice(Point pt)
 bool Point::equal(Point pt)
 {
     return this->x== pt.x && this->y==pt.y;
+}
+
+void Point::print(){
+    cout << "(" << x << "," << y << ")" << endl;
 }

@@ -15,11 +15,19 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     voronoi.cpp \
-    point.cpp
+    point.cpp \
+    Cellule.cpp \
+    droite.cpp \
+    bibliopoint.cpp \
+    bibliocellule.cpp
 
 HEADERS  += mainwindow.h \
     voronoi.h \
-    point.h
+    point.h \
+    Cellule.h \
+    droite.h \
+    bibliopoint.h \
+    bibliocellule.h
 
 FORMS    += mainwindow.ui
 
