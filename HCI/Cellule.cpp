@@ -16,6 +16,7 @@ Cellule::Cellule(int id)
 
 }
 
+
 float Cellule::distanceTo(Point pt){
     return pt.distanceTo(this->pt);
 }
@@ -34,7 +35,7 @@ void Cellule::print(){
 
     cout << "Sommet :" << endl;
     int i;
-    for(i=0;i<this->nbSommets;i++)
+    for(i=0;i<sommets.size();i++)
     {
         this->sommets[i].print();
     }

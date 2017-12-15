@@ -15,12 +15,18 @@ voronoi::voronoi()
 }
 
 
+voronoi::~voronoi(){
+    int i;
+    for(i=0;i<cellules.size();i++)
+        delete cellules[i];
+
+}
+
 
 /**
- * @brief Initialisation
- * @param width
- * @param height
- */
+    Initilisation du voronoi. On creer 4 cellule triangulaire qui englobe la fenetre
+
+*/
 void voronoi::init(int width, int height, vector<Point> Points)
 {
     this->width = width;
@@ -66,31 +72,34 @@ void voronoi::init(int width, int height, vector<Point> Points)
     bd->nbSommets = 3;
     bg->nbSommets = 3;
 
+
+    // On ajoute ne plus des 2 voisins, une cellule vide qui correspont à la 3eme face de chaque triangle. Cette cellule n'est jamais utilisé mais sert pour le décompte des cellules adjacente
     hg->adjacents.push_back(hd);
     hg->adjacents.push_back(bg);
+    hg->adjacents.push_back(new Cellule());
 
+    hd->adjacents.push_back(new Cellule());
     hd->adjacents.push_back(bd);
     hd->adjacents.push_back(hg);
 
+
     bd->adjacents.push_back(hd);
+    bd->adjacents.push_back(new Cellule());
     bd->adjacents.push_back(bg);
 
     bg->adjacents.push_back(hg);
     bg->adjacents.push_back(bd);
+    bg->adjacents.push_back(new Cellule());
 
-    cout << "W = " << this->width << " H = " << this->height << endl;
 
-    /*hg->print();
-    hd->print();
-    bd->print();
-    bg->print();*/
-    Points[0].print();
     this->addPoint(Points[0]);
-    /*
+    this->addPoint(Points[1]);
+    DEBUG=1;
+    //this->addPoint(Points[2]);
     int i;
     for(i=0;i<Points.size();i++){
-        this->addPoint(Points[i]);
-    }*/
+    //    this->addPoint(Points[i]);
+    }
 
 
 }
@@ -134,6 +143,9 @@ biblioPoint voronoi::intersectionDroitePolygone(vector<Point> lstPts,Droite droi
     int i;
     float num,denom,t,ipx,ipy;
 
+    if(DEBUG)
+        cout << "nbPts" << nbPts << endl;
+
     for(i=0;i<nbPts;i++){
         currentPt = lstPts[(i+1)%nbPts];
         // le segment de droite que l'on considère est de
@@ -146,6 +158,11 @@ biblioPoint voronoi::intersectionDroitePolygone(vector<Point> lstPts,Droite droi
         num = droite.c + droite.a*lastPt.x + droite.b*lastPt.y;
         denom = droite.a*segment.x + droite.b*segment.y;
         t = -num/denom;
+       // int tmp_t = t*10;
+       // t = tmp_t/10.0;
+
+        if(DEBUG)
+            cout << "t :" << t << endl;
         // si le point d'intersection est bien sur le segment
         if(t>=0&& t<=1){
             // on calcul le point d'intersection
@@ -168,23 +185,37 @@ biblioPoint voronoi::intersectionDroitePolygone(vector<Point> lstPts,Droite droi
 
 biblioCellule voronoi::cutCell(Cellule *cell, Cellule *newcell){
     //La médiatrice
+
+
+    if(DEBUG)
+        cout << "FLAG1" << endl;
     Droite med = cell->pt.mediatrice(newcell->pt);
     //Détermination des (2!) points d'intersection
     biblioPoint itscs= intersectionDroitePolygone(cell->sommets,med);
     vector<Point> ips = itscs.ips;
     vector<int> nums = itscs.nums;
+    if(nums.size() != 2)
+    {
 
+        cout << "ERROR dans intersectionDroitePolygone, point d'intersection non trouvé" << endl;
+        cout << "nb intersection trouvé :" << nums.size() << endl;
 
+    }
 
+    if(DEBUG)
+    {
+
+        cout << "size :" << cell->adjacents.size() << endl;
+        cout << "size :" << nums.size() << endl;
+    }
+    if(DEBUG)
+        cout << "FLAG2" << endl;
     // Attention ça peut etre NULLLLLLLLLLLLL
     Cellule *firstAdj = cell->adjacents[nums[0]];
     Cellule *lastAdj = cell->adjacents[nums[1]];
 
-    firstAdj->print();
-    lastAdj->print();
 
     //On détermine les nouveaux sommets de la cellule
-
 
     vector<Point> tmp_ips;
     tmp_ips.push_back(ips[0]);
@@ -193,8 +224,12 @@ biblioCellule voronoi::cutCell(Cellule *cell, Cellule *newcell){
     tmp_adj.push_back(firstAdj);
     tmp_adj.push_back(lastAdj);
 
+
+
     vector<Point> tmp_sommets = splice_Point(cell->sommets,nums[0]+1,nums[1]-nums[0],tmp_ips);//cell.sommets;
     vector<Cellule*> tmp_adjacents = splice_Cellule(cell->adjacents,nums[0]+1,nums[1]-nums[0],tmp_adj);
+
+
 
     // on verifie de quel cote de la cellule coupe
     // en deux on garde pour elle meme
@@ -210,7 +245,8 @@ biblioCellule voronoi::cutCell(Cellule *cell, Cellule *newcell){
           cell->adjacents.push_back(newcell);
     }
     cell->nbSommets = cell->sommets.size();
-
+    if(DEBUG)
+        cout << "FLAG3" << endl;
 
     return biblioCellule(ips,tmp_adj);
 
@@ -220,26 +256,19 @@ biblioCellule voronoi::cutCell(Cellule *cell, Cellule *newcell){
 
 
 
-vector<Point> voronoi::splice_Point(vector<Point> v,int start, int howmuch, const vector<Point>& ar){
+vector<Point> voronoi::splice_Point(vector<Point> &v,int start, int howmuch,vector<Point> ar){
     vector<Point> result(v.begin()+start,v.begin()+start+howmuch);
     v.erase(v.begin()+start,v.begin()+start+howmuch);
-    v.insert(v.begin()+start,ar.begin(),ar.begin());
+    v.insert(v.begin()+start,ar.begin(),ar.end());
     return result;
 }
 
 
 vector<Cellule*> voronoi::splice_Cellule(vector<Cellule*> &v,int start, int howmuch, const vector<Cellule*>& ar){
     vector<Cellule*> result;
-    if(v.size() > start)
-    {
-        result = vector<Cellule*>(v.begin()+start,v.begin()+start+howmuch);
-        v.erase(v.begin()+start,v.begin()+start+howmuch);
-    }
-  //  cout << "size = " << v.size() << " start = " << start << "howmuch = " << howmuch << endl;
-
-
-  //  v.insert(v.begin()+start,ar.begin(),ar.end());
-    cout << "FIN" << endl;
+    result = vector<Cellule*>(v.begin()+start,v.begin()+start+howmuch);
+    v.erase(v.begin()+start,v.begin()+start+howmuch);
+    v.insert(v.begin()+start,ar.begin(),ar.end());
     return result;
 }
 
@@ -254,9 +283,7 @@ void voronoi::addPoint(Point pt){
 
     // On creer une nouvelle cellule
     Cellule* cell = new Cellule(this->nbPoints);
-    this->cellules[this->nbPoints]=cell;
-
-
+    this->cellules.push_back(cell);
     cell->pt = pt;
 
     // On coupe en deux la cellule obtenu
@@ -264,11 +291,6 @@ void voronoi::addPoint(Point pt){
     // courante et le point de la cellule
     biblioCellule tmp = cutCell(cellmin,cell);
 
-
-    cout << "cellmin" << endl;
-    cellmin->print();
-    cout << "cell" << endl;
-    cell->print();
     vector<Point> ips = tmp.ips;
     Cellule* first = tmp.adjacents[0];
     Cellule* last = tmp.adjacents[1];
@@ -298,6 +320,8 @@ void voronoi::addPoint(Point pt){
 
     cell->nbSommets = cell->sommets.size();
 
+
+    cell->print();
     this->nbPoints++;
 }
 

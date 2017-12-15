@@ -22,8 +22,8 @@ vector<Point> MainWindow::getAllPos()
     vector<Point> PosButtons;
 
     PosButtons.push_back(getCenterButton(ui->pushButton));
-  //  PosButtons.push_back(getCenterButton(ui->pushButton_2));
-  //  PosButtons.push_back(getCenterButton(ui->pushButton_3));
+    PosButtons.push_back(getCenterButton(ui->pushButton_2));
+    PosButtons.push_back(getCenterButton(ui->pushButton_3));
 
     return PosButtons;
 }
@@ -44,35 +44,27 @@ Point MainWindow::getCenterButton(QPushButton *button)
 void MainWindow::paintEvent(QPaintEvent *event){
     QPainter painter(this);
 
+
+
     //On définit pour le QPainter un stylo rouge de taille 4
             QPen pen;
             pen.setColor (Qt::red);
             pen.setWidth (4);
             painter.setPen(pen);
 
-            //On dessine un rectangle
-            //QPen : rouge de taille 4
-            //QBrush : aucun remplissage
-            painter.drawRect (10, 10, 80, 80);
-
-            //On définit pour le QPainter un pinceau vert utilisant le pattern SOLID
-            QBrush brush(Qt::SolidPattern);
-            brush.setColor(Qt::green);
-            painter.setBrush(brush);
-
-            //On dessine un rectangle
-            //QPen : rouge de taille 4
-            //QBrush : remplissage vert avec le pattern SOLID
-            painter.drawRect (15, 15, 70, 70);
 
 
-            //On définit pour le QPainter stylo bleu de taille 8
-            pen.setColor (Qt::blue);
-            pen.setWidth (8);
-            painter.setPen(pen);
+            for(int i=4;i<v.cellules.size();i++)
+            {
+                Cellule *c=v.cellules[i];
+                for(int j=0;j<c->sommets.size(); j++)
+                {
+                    Point p1 = c->sommets[j];
+                    Point p2 = c->sommets[(j+1)%c->sommets.size()];
+                    painter.drawLine(p1.x, p1.y, p2.x, p2.y);
 
-            //Dessine une ligne
-            //QPen : bleu de taille 8
-            //QBrush : n'est pas utilisé pour une ligne
-            painter.drawLine(0, 0, 100, 100);
+                }
+            }
+
 }
+

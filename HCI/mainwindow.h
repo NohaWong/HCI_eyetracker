@@ -25,6 +25,8 @@ public:
 
     vector<Point> getAllPos();
 
+    voronoi v;
+
     void paintEvent(QPaintEvent *event);
 private:
     Ui::MainWindow *ui;
