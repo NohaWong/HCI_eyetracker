@@ -51,3 +51,17 @@ void Cellule::print(){
 void Cellule::printID(){
     cout << "ID = " << id << endl;
 }
+
+QVector<QPoint> Cellule::point_to_qpoint(){
+    QVector<QPoint> res;
+    QPoint p;
+    int x_cord,y_cord;
+    for(int i=4;i<this->sommets.size();i++){
+        x_cord=this->sommets[i].x;
+        y_cord=this->sommets[i].y;
+        p = QPoint(x_cord,y_cord);
+        res.push_back(p);
+    }
+    return res;
+
+}

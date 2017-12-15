@@ -3,6 +3,8 @@
 #include <vector>
 #include "point.h"
 #include <iostream>
+#include <QPolygon>
+#include <QVector>
 using namespace std;
 
 class Cellule
@@ -19,6 +21,7 @@ public:
     vector<Cellule*> adjacents;
     void print();
     void printID();
+    QVector<QPoint> point_to_qpoint();
 
 private:
 
