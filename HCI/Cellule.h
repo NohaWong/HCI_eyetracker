@@ -12,12 +12,11 @@ class Cellule
 public:
     Cellule();
     Cellule(int id);
-    float distanceTo(Point pt);
+    float distanceTo(Point *pt);
     bool  equalCells(Cellule *cell);
-    Point pt;
+    Point *pt;
     int id;
-    vector<Point> sommets;
-    int nbSommets;
+    vector<Point*> sommets;
     vector<Cellule*> adjacents;
     void print();
     void printID();

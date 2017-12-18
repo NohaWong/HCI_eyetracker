@@ -7,7 +7,7 @@
 #include "voronoi.h"
 #include "point.h"
 #include "qpainter.h"
-
+#include "boost_point.h"
 
 using namespace std;
 
@@ -23,14 +23,14 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    vector<Point> getAllPos();
+    vector<boost_Point> getAllPos();
 
     voronoi v;
 
     void paintEvent(QPaintEvent *event);
 private:
     Ui::MainWindow *ui;
-    Point getCenterButton(QPushButton *button);
+    boost_Point getCenterButton(QPushButton *button);
 
 };
 

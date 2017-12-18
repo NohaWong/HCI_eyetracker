@@ -11,3 +11,6 @@ Droite::Droite(float a, float b, float c)
     this->c=c;
 }
 
+void Droite::print(){
+    cout << "a: " << a << " b: " << b << " c: " << c << endl;
+}

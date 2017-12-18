@@ -11,8 +11,8 @@ class biblioCellule
 {
 public:
     biblioCellule();
-    biblioCellule(vector<Point> ips,vector<Cellule*> adjacents);
-    vector<Point> ips;
+    biblioCellule(vector<Point*> ips,vector<Cellule*> adjacents);
+    vector<Point*> ips;
     vector<Cellule*> adjacents;
 };
 

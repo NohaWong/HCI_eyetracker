@@ -12,10 +12,10 @@ MAKEFILE      = Makefile
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64
+INCPATH       = -I. -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtOpenGL -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64
 QMAKE         = /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -36,7 +36,7 @@ DISTNAME      = HCI1.0.0
 DISTDIR = /home/jonathan/M2/UIS/HCI_eyetracker/HCI/.tmp/HCI1.0.0
 LINK          = g++
 LFLAGS        = -m64 -Wl,-O1
-LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -lCGAL -lgmp -frounding-math -lm -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -lCGAL -lgmp -frounding-math -lm -lQt5OpenGL -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -55,7 +55,13 @@ SOURCES       = main.cpp \
 		Cellule.cpp \
 		droite.cpp \
 		bibliopoint.cpp \
-		bibliocellule.cpp moc_mainwindow.cpp
+		bibliocellule.cpp \
+		boost_voronoi.cpp \
+		boost_point.cpp \
+		boost_mainwindow.cpp \
+		glwidget.cpp moc_mainwindow.cpp \
+		moc_boost_mainwindow.cpp \
+		moc_glwidget.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		voronoi.o \
@@ -64,7 +70,13 @@ OBJECTS       = main.o \
 		droite.o \
 		bibliopoint.o \
 		bibliocellule.o \
-		moc_mainwindow.o
+		boost_voronoi.o \
+		boost_point.o \
+		boost_mainwindow.o \
+		glwidget.o \
+		moc_mainwindow.o \
+		moc_boost_mainwindow.o \
+		moc_glwidget.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -127,14 +139,23 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		Cellule.h \
 		droite.h \
 		bibliopoint.h \
-		bibliocellule.h main.cpp \
+		bibliocellule.h \
+		boost_voronoi.h \
+		boost_point.h \
+		voronoi_visual_utils.h \
+		boost_mainwindow.h \
+		glwidget.h main.cpp \
 		mainwindow.cpp \
 		voronoi.cpp \
 		point.cpp \
 		Cellule.cpp \
 		droite.cpp \
 		bibliopoint.cpp \
-		bibliocellule.cpp
+		bibliocellule.cpp \
+		boost_voronoi.cpp \
+		boost_point.cpp \
+		boost_mainwindow.cpp \
+		glwidget.cpp
 QMAKE_TARGET  = HCI
 DESTDIR       = #avoid trailing-slash linebreak
 TARGET        = HCI
@@ -222,6 +243,7 @@ Makefile: HCI.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64/qmake.conf 
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		HCI.pro \
+		/usr/lib/x86_64-linux-gnu/libQt5OpenGL.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Widgets.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Gui.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Core.prl
@@ -283,6 +305,7 @@ Makefile: HCI.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64/qmake.conf 
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf:
 HCI.pro:
+/usr/lib/x86_64-linux-gnu/libQt5OpenGL.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Widgets.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Gui.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Core.prl:
@@ -300,8 +323,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h voronoi.h point.h Cellule.h droite.h bibliopoint.h bibliocellule.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mainwindow.cpp voronoi.cpp point.cpp Cellule.cpp droite.cpp bibliopoint.cpp bibliocellule.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h voronoi.h point.h Cellule.h droite.h bibliopoint.h bibliocellule.h boost_voronoi.h boost_point.h voronoi_visual_utils.h boost_mainwindow.h glwidget.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp mainwindow.cpp voronoi.cpp point.cpp Cellule.cpp droite.cpp bibliopoint.cpp bibliocellule.cpp boost_voronoi.cpp boost_point.cpp boost_mainwindow.cpp glwidget.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
 
 
@@ -325,17 +348,27 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_mainwindow.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_boost_mainwindow.cpp moc_glwidget.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_boost_mainwindow.cpp moc_glwidget.cpp
 moc_mainwindow.cpp: voronoi.h \
 		Cellule.h \
 		point.h \
 		droite.h \
 		bibliopoint.h \
 		bibliocellule.h \
+		boost_point.h \
 		mainwindow.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/jonathan/M2/UIS/HCI_eyetracker/HCI -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/jonathan/M2/UIS/HCI_eyetracker/HCI -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
+
+moc_boost_mainwindow.cpp: glwidget.h \
+		voronoi_visual_utils.h \
+		boost_mainwindow.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/jonathan/M2/UIS/HCI_eyetracker/HCI -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include boost_mainwindow.h -o moc_boost_mainwindow.cpp
+
+moc_glwidget.cpp: voronoi_visual_utils.h \
+		glwidget.h
+	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/jonathan/M2/UIS/HCI_eyetracker/HCI -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include glwidget.h -o moc_glwidget.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -355,13 +388,9 @@ compiler_clean: compiler_moc_header_clean compiler_uic_clean
 
 ####### Compile
 
-main.o: main.cpp mainwindow.h \
-		voronoi.h \
-		Cellule.h \
-		point.h \
-		droite.h \
-		bibliopoint.h \
-		bibliocellule.h
+main.o: main.cpp boost_mainwindow.h \
+		glwidget.h \
+		voronoi_visual_utils.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 mainwindow.o: mainwindow.cpp mainwindow.h \
@@ -371,6 +400,7 @@ mainwindow.o: mainwindow.cpp mainwindow.h \
 		droite.h \
 		bibliopoint.h \
 		bibliocellule.h \
+		boost_point.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
 
@@ -405,8 +435,30 @@ bibliocellule.o: bibliocellule.cpp bibliocellule.h \
 		Cellule.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o bibliocellule.o bibliocellule.cpp
 
+boost_voronoi.o: boost_voronoi.cpp boost_voronoi.h \
+		boost_point.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o boost_voronoi.o boost_voronoi.cpp
+
+boost_point.o: boost_point.cpp boost_point.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o boost_point.o boost_point.cpp
+
+boost_mainwindow.o: boost_mainwindow.cpp boost_mainwindow.h \
+		glwidget.h \
+		voronoi_visual_utils.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o boost_mainwindow.o boost_mainwindow.cpp
+
+glwidget.o: glwidget.cpp glwidget.h \
+		voronoi_visual_utils.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o glwidget.o glwidget.cpp
+
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
+
+moc_boost_mainwindow.o: moc_boost_mainwindow.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_boost_mainwindow.o moc_boost_mainwindow.cpp
+
+moc_glwidget.o: moc_glwidget.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_glwidget.o moc_glwidget.cpp
 
 ####### Install
 

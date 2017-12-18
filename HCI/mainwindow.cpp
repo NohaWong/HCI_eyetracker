@@ -17,9 +17,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-vector<Point> MainWindow::getAllPos()
+vector<boost_Point> MainWindow::getAllPos()
 {
-    vector<Point> PosButtons;
+    vector<boost_Point> PosButtons;
 
     PosButtons.push_back(getCenterButton(ui->pushButton));
     PosButtons.push_back(getCenterButton(ui->pushButton_2));
@@ -30,17 +30,18 @@ vector<Point> MainWindow::getAllPos()
 
 
 
-Point MainWindow::getCenterButton(QPushButton *button)
+boost_Point MainWindow::getCenterButton(QPushButton *button)
 {
 
 
-    float x =(button->pos().x() + button->pos().x()+button->width()) /2.0;
-    float y =(button->pos().y() + button->pos().y()+button->height()) /2.0;
+    int x =(button->pos().x() + button->pos().x()+button->width())/2;
+    int y =(button->pos().y() + button->pos().y()+button->height())/2;
 
-    Point pt= Point( x,y);
+    boost_Point pt= boost_Point( x,y);
     return pt;
 
 }
+
 void MainWindow::paintEvent(QPaintEvent *event){
     QPainter painter(this);
 
@@ -59,9 +60,9 @@ void MainWindow::paintEvent(QPaintEvent *event){
                 Cellule *c=v.cellules[i];
                 for(int j=0;j<c->sommets.size(); j++)
                 {
-                    Point p1 = c->sommets[j];
-                    Point p2 = c->sommets[(j+1)%c->sommets.size()];
-                    painter.drawLine(p1.x, p1.y, p2.x, p2.y);
+                    Point *p1 = c->sommets[j];
+                    Point *p2 = c->sommets[(j+1)%c->sommets.size()];
+                    painter.drawLine(p1->x, p1->y, p2->x, p2->y);
 
                 }
             }

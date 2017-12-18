@@ -12,14 +12,12 @@ class Point
 public:
 
     Point();
-    bool equal(Point pt);
+    bool equal(Point *pt);
     Point(float x, float y);
-    Point copy();
-    float distanceTo(Point pt);
-    float perProduct(Point p2);
-    Droite mediatrice(Point pt);
+    Point* copy();
+    float distanceTo(Point *pt);
+    Droite mediatrice(Point *pt);
     void print();
-
 
     float x;
     float y;
