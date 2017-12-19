@@ -28,18 +28,7 @@ float Point::distanceTo(Point *pt)
 
 
 
-Droite Point::mediatrice(Point *pt)
-{
-    Droite droite;
-    Point milieu = Point((x+pt->x)/2,(y+pt->y)/2);
 
-
-    droite.a = pt->x-x;
-    droite.b = pt->y-y;
-    droite.c = -(droite.b*milieu.y + droite.a*milieu.x);
-
-    return droite;
-}
 
 bool Point::equal(Point *pt)
 {

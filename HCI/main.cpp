@@ -47,6 +47,7 @@ int main(int argc, char *argv[])
 #include <iostream>
 #include <vector>
 #include "boost_mainwindow.h"
+#include "boost_voronoi.h"
 #include <QMessageBox>
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QtGui>
@@ -65,6 +66,7 @@ int main(int argc, char* argv[]) {
   boost_MainWindow window;
   window.show();
   return app.exec();
+
 }
 
 //#include "voronoi_visualizer.moc"

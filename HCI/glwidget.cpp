@@ -4,7 +4,7 @@
 
 
 QSize GLWidget::sizeHint() const {
-  return QSize(600, 600);
+  return QSize(1000, 1000);
 }
 
 void GLWidget::build(const QString& file_path) {
@@ -26,9 +26,7 @@ void GLWidget::build(const QString& file_path) {
 
   // Construct voronoi diagram.
   construct_voronoi(
-      point_data_.begin(), point_data_.end(),
-      segment_data_.begin(), segment_data_.end(),
-      &vd_);
+      point_data_.begin(), point_data_.end(),&vd_);
 
   // Color exterior edges.
   for (const_edge_iterator it = vd_.edges().begin();
@@ -66,7 +64,7 @@ void GLWidget::paintGL() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   draw_points();
-  draw_segments();
+  //draw_segments();
   draw_vertices();
   draw_edges();
 }
@@ -99,16 +97,25 @@ void GLWidget::read_data(const QString& file_path) {
         tr("Disable to open file ") + file_path);
   }
   QTextStream in_stream(&data);
-  std::size_t num_points, num_segments;
-  int x1, y1, x2, y2;
+  std::size_t num_points;
+  int x1, y1;
+  int form;
+  int color;
+  int scale;
+  in_stream >> scale;
   in_stream >> num_points;
   for (std::size_t i = 0; i < num_points; ++i) {
-    in_stream >> x1 >> y1;
+    //Coordonnée
+    in_stream >> x1 >> y1 >> form >> color;
     point_type p(x1, y1);
     update_brect(p);
     point_data_.push_back(p);
+    point_form_.push_back(form);
+    point_color_.push_back(color);
   }
-  in_stream >> num_segments;
+
+  size_form_ = scale/100.;
+  /*in_stream >> num_segments;
   for (std::size_t i = 0; i < num_segments; ++i) {
     in_stream >> x1 >> y1 >> x2 >> y2;
     point_type lp(x1, y1);
@@ -116,7 +123,7 @@ void GLWidget::read_data(const QString& file_path) {
     update_brect(lp);
     update_brect(hp);
     segment_data_.push_back(segment_type(lp, hp));
-  }
+  }*/
   in_stream.flush();
 }
 
@@ -169,12 +176,33 @@ void GLWidget::draw_points() {
   // Draw input points and endpoints of the input segments.
   glColor3f(0.0f, 0.5f, 1.0f);
   glPointSize(9);
-  glBegin(GL_POINTS);
+  //glBegin(GL_POINTS);
   for (std::size_t i = 0; i < point_data_.size(); ++i) {
     point_type point = point_data_[i];
     deconvolve(point, shift_);
-    glVertex2f(point.x(), point.y());
+    //glVertex2f(point.x(), point.y());
+    draw_button(point);
+    switch(point_form_[i]){
+    case 0: //Logange
+        draw_circle(point,point_color_[i]);
+        break;
+    case 1: //
+        draw_cross(point,point_color_[i]);
+        break;
+    case 2:
+        draw_square(point,point_color_[i]);
+        break;
+    case 3:
+        draw_triangle(point,point_color_[i]);
+        break;
+    default:
+        printf("ERROR, form missing in draw_points , index : %i",i);
+        break;
+    }
+
+
   }
+  /*
   for (std::size_t i = 0; i < segment_data_.size(); ++i) {
     point_type lp = low(segment_data_[i]);
     lp = deconvolve(lp, shift_);
@@ -182,10 +210,10 @@ void GLWidget::draw_points() {
     point_type hp = high(segment_data_[i]);
     hp = deconvolve(hp, shift_);
     glVertex2f(hp.x(), hp.y());
-  }
-  glEnd();
+  }*/
+  //glEnd();
 }
-
+/*
 void GLWidget::draw_segments() {
   // Draw input segments.
   glColor3f(0.0f, 0.5f, 1.0f);
@@ -201,7 +229,7 @@ void GLWidget::draw_segments() {
   }
   glEnd();
 }
-
+*/
 void GLWidget::draw_vertices() {
   // Draw voronoi vertices.
   glColor3f(0.0f, 0.0f, 0.0f);
@@ -238,9 +266,9 @@ void GLWidget::draw_edges() {
       samples.push_back(vertex0);
       point_type vertex1(it->vertex1()->x(), it->vertex1()->y());
       samples.push_back(vertex1);
-      if (it->is_curved()) {
+     /* if (it->is_curved()) {
         sample_curved_edge(*it, &samples);
-      }
+      }*/
     }
     glBegin(GL_LINE_STRIP);
     for (std::size_t i = 0; i < samples.size(); ++i) {
@@ -249,6 +277,95 @@ void GLWidget::draw_edges() {
     }
     glEnd();
   }
+}
+
+void GLWidget::draw_circle(point_type center, int color)
+{
+    start_color(color);
+    glLineWidth(1.7f);
+    glBegin(GL_QUADS);
+    glVertex2f(center.x(), center.y()-size_form_);
+    glVertex2f(center.x()-size_form_, center.y());
+    glVertex2f(center.x(), center.y()+size_form_);
+    glVertex2f(center.x()+size_form_, center.y());
+    glEnd();
+
+}
+
+void GLWidget::draw_cross(point_type center,int color)
+{
+    start_color(color);
+    glLineWidth(5.0f);
+    glBegin(GL_LINES);
+    glVertex2f(center.x()-size_form_, center.y()-size_form_);
+    glVertex2f(center.x()+size_form_, center.y()+size_form_);
+    glVertex2f(center.x()+size_form_, center.y()-size_form_);
+    glVertex2f(center.x()-size_form_, center.y()+size_form_);
+    glEnd();
+
+
+}
+
+void GLWidget::draw_square(point_type center,int color)
+{
+    start_color(color);
+    glLineWidth(1.7f);
+    glBegin(GL_QUADS);
+    glVertex2f(center.x()-size_form_, center.y()-size_form_);
+    glVertex2f(center.x()+size_form_, center.y()-size_form_);
+    glVertex2f(center.x()+size_form_, center.y()+size_form_);
+    glVertex2f(center.x()-size_form_, center.y()+size_form_);
+    glEnd();
+
+}
+
+void GLWidget::draw_triangle(point_type center,int color)
+{
+
+    start_color(color);
+    glLineWidth(1.7f);
+    glBegin(GL_TRIANGLES);
+    glVertex2f(center.x(),center.y()+size_form_);
+    glVertex2f(center.x()+size_form_,center.y()-size_form_);
+    glVertex2f(center.x()-size_form_,center.y()-size_form_);
+    glEnd();
+}
+
+
+
+
+void GLWidget::draw_button(point_type center)
+{
+    start_color(4);
+    glLineWidth(1.7f);
+    glBegin(GL_QUADS);
+    glVertex2f(center.x()-size_form_*2, center.y()-size_form_*3/2);
+    glVertex2f(center.x()+size_form_*2, center.y()-size_form_*3/2);
+    glVertex2f(center.x()+size_form_*2, center.y()+size_form_*3/2);
+    glVertex2f(center.x()-size_form_*2, center.y()+size_form_*3/2);
+    glEnd();
+}
+
+void GLWidget::start_color(int color)
+{
+    switch(color){
+    case 0: //RED
+        glColor3f(1.0f, 0.0f, 0.0f);
+        break;
+    case 1: // BLUE
+        glColor3f(0.0f, 0.0f, 1.0f);
+        break;
+    case 2: // YELLOW
+        glColor3f(1.0f, 1.0f, 0.0f);
+        break;
+    case 3: // GREEN
+        glColor3f(0.0f, 1.0f, 0.0f);
+        break;
+    default:
+        glColor3f(0.0f, 0.0f, 0.0f);
+        break;
+    }
+
 }
 
 void GLWidget::clip_infinite_edge(
@@ -265,6 +382,8 @@ void GLWidget::clip_infinite_edge(
     direction.x(p1.y() - p2.y());
     direction.y(p2.x() - p1.x());
   } else {
+    printf("ERROR in clip_infinite_edge");
+      /*
     origin = cell1.contains_segment() ?
         retrieve_point(cell2) :
         retrieve_point(cell1);
@@ -279,8 +398,10 @@ void GLWidget::clip_infinite_edge(
     } else {
       direction.x(-dy);
       direction.y(dx);
-    }
+
+     }*/
   }
+
   coordinate_type side = xh(brect_) - xl(brect_);
   coordinate_type koef =
       side / (std::max)(fabs(direction.x()), fabs(direction.y()));
@@ -301,7 +422,7 @@ void GLWidget::clip_infinite_edge(
         point_type(edge.vertex1()->x(), edge.vertex1()->y()));
   }
 }
-
+/*
 void GLWidget::sample_curved_edge(
     const edge_type& edge,
     std::vector<point_type>* sampled_edge) {
@@ -315,22 +436,26 @@ void GLWidget::sample_curved_edge(
   voronoi_visual_utils<coordinate_type>::discretize(
       point, segment, max_dist, sampled_edge);
 }
-
+*/
 GLWidget::point_type GLWidget::retrieve_point(const cell_type& cell) {
   source_index_type index = cell.source_index();
   source_category_type category = cell.source_category();
   if (category == SOURCE_CATEGORY_SINGLE_POINT) {
     return point_data_[index];
   }
+  printf("ERROR in retrieve_point");
+  return point_data_[index];
+  /*
   index -= point_data_.size();
   if (category == SOURCE_CATEGORY_SEGMENT_START_POINT) {
     return low(segment_data_[index]);
   } else {
     return high(segment_data_[index]);
-  }
+  }*/
 }
-
+/*
 GLWidget::segment_type GLWidget::retrieve_segment(const cell_type& cell) {
   source_index_type index = cell.source_index() - point_data_.size();
   return segment_data_[index];
 }
+*/

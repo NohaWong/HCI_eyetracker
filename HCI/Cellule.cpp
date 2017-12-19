@@ -25,9 +25,7 @@ bool Cellule::equalCells(Cellule *cell){
 }
 
 void Cellule::print(){
-    this->printID();
-    cout << "Point central = ";
-    pt->print();
+
 
     cout << "Sommet :" << endl;
     int i;
@@ -36,12 +34,7 @@ void Cellule::print(){
         this->sommets[i]->print();
     }
 
-    cout << "ID cellule adjacente :" << endl;
 
-    for(i=0;i<this->adjacents.size();i++)
-    {
-        this->adjacents[i]->printID();
-    }
 }
 
 void Cellule::printID(){

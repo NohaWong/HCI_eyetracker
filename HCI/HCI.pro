@@ -14,31 +14,20 @@ TEMPLATE = app
 
 SOURCES +=\
     main.cpp \
-    mainwindow.cpp \
-    voronoi.cpp \
     point.cpp \
     Cellule.cpp \
-    droite.cpp \
-    bibliopoint.cpp \
-    bibliocellule.cpp \
     boost_voronoi.cpp \
-    boost_point.cpp \
     boost_mainwindow.cpp \
     glwidget.cpp
 
-HEADERS  += mainwindow.h \
-    voronoi.h \
+HEADERS  += \
     point.h \
     Cellule.h \
-    droite.h \
-    bibliopoint.h \
-    bibliocellule.h \
     boost_voronoi.h \
-    boost_point.h \
     voronoi_visual_utils.h \
     boost_mainwindow.h \
     glwidget.h
 
-FORMS    += mainwindow.ui
+FORMS    +=
 
 LIBS += -lCGAL -lgmp -frounding-math -lm

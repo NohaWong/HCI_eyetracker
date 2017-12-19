@@ -4,45 +4,59 @@
 
 #include <cstdio>
 #include <vector>
-#include "boost_point.h"
 #include <iostream>
 #include <boost/polygon/voronoi.hpp>
-using boost::polygon::voronoi_builder;
-using boost::polygon::voronoi_diagram;
-using boost::polygon::x;
-using boost::polygon::y;
-using boost::polygon::low;
-using boost::polygon::high;
+#include <Cellule.h>
+#include <point.h>
 
 
-typedef voronoi_diagram<double>::cell_type cell_type;
-typedef voronoi_diagram<double>::edge_type edge_type;
-typedef voronoi_diagram<double>::vertex_type vertex_type;
+
+
+using namespace boost::polygon;
 using namespace std;
 
 class boost_voronoi
 {
 public:
+    typedef double coordinate_type;
+    typedef point_data<coordinate_type> point_type;
+    typedef rectangle_data<coordinate_type> rect_type;
+    typedef voronoi_builder<int> VB;
+    typedef voronoi_diagram<coordinate_type> VD;
+    typedef VD::cell_type cell_type;
+    typedef VD::cell_type::source_index_type source_index_type;
+    typedef VD::cell_type::source_category_type source_category_type;
+    typedef VD::edge_type edge_type;
+    typedef VD::cell_container_type cell_container_type;
+    typedef VD::cell_container_type vertex_container_type;
+    typedef VD::edge_container_type edge_container_type;
+    typedef VD::const_cell_iterator const_cell_iterator;
+    typedef VD::const_vertex_iterator const_vertex_iterator;
+    typedef VD::const_edge_iterator const_edge_iterator;
 
-    voronoi_diagram<double> vd;
+    point_type shift_;
+    std::vector<point_type> point_data_;
+    rect_type brect_;
+    VD vd_;
+    bool brect_initialized_;
+    bool primary_edges_only_;
+    bool internal_edges_only_;
+
+
+
+    int width;
+    int height;
+
 
 
     boost_voronoi();
-    void init(vector<boost_Point> points);
+    boost_voronoi(int w, int h);
+    void init(vector<Point> points);
 
 
-
-
-    // Traversing Voronoi edges using edge iterator.
-    int iterate_primary_edges1();
-    // Traversing Voronoi edges using cell iterator.
-    int iterate_primary_edges2();
-    // Traversing Voronoi edges using vertex iterator.
-    // As opposite to the above two functions this one will not iterate through
-    // edges without finite endpoints and will iterate only once through edges
-    // with single finite endpoint.
-    int iterate_primary_edges3();
-
+    vector<Cellule> convert_into_Cellule();
+    void clip_infinite_edge(const edge_type& edge, std::vector<point_type>* clipped_edge);
+    point_type retrieve_point(const cell_type& cell);
 
 
 
@@ -55,28 +69,6 @@ public:
 };
 
 
-
-
-namespace boost {
-namespace polygon {
-
-template <>
-struct geometry_concept<boost_Point> {
-  typedef point_concept type;
-};
-
-template <>
-struct point_traits<boost_Point> {
-  typedef int coordinate_type;
-
-  static inline coordinate_type get(
-      const boost_Point& point, orientation_2d orient) {
-    return (orient == HORIZONTAL) ? point.x : point.y;
-  }
-};
-
-}  // polygon
-}  // boost
 
 
 

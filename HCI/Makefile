@@ -15,7 +15,7 @@ CXX           = g++
 DEFINES       = -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -m64 -pipe -O2 -Wall -W -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtOpenGL -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64
+INCPATH       = -I. -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtOpenGL -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64
 QMAKE         = /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -49,32 +49,18 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = main.cpp \
-		mainwindow.cpp \
-		voronoi.cpp \
 		point.cpp \
 		Cellule.cpp \
-		droite.cpp \
-		bibliopoint.cpp \
-		bibliocellule.cpp \
 		boost_voronoi.cpp \
-		boost_point.cpp \
 		boost_mainwindow.cpp \
-		glwidget.cpp moc_mainwindow.cpp \
-		moc_boost_mainwindow.cpp \
+		glwidget.cpp moc_boost_mainwindow.cpp \
 		moc_glwidget.cpp
 OBJECTS       = main.o \
-		mainwindow.o \
-		voronoi.o \
 		point.o \
 		Cellule.o \
-		droite.o \
-		bibliopoint.o \
-		bibliocellule.o \
 		boost_voronoi.o \
-		boost_point.o \
 		boost_mainwindow.o \
 		glwidget.o \
-		moc_mainwindow.o \
 		moc_boost_mainwindow.o \
 		moc_glwidget.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -133,27 +119,15 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		HCI.pro mainwindow.h \
-		voronoi.h \
-		point.h \
+		HCI.pro point.h \
 		Cellule.h \
-		droite.h \
-		bibliopoint.h \
-		bibliocellule.h \
 		boost_voronoi.h \
-		boost_point.h \
 		voronoi_visual_utils.h \
 		boost_mainwindow.h \
 		glwidget.h main.cpp \
-		mainwindow.cpp \
-		voronoi.cpp \
 		point.cpp \
 		Cellule.cpp \
-		droite.cpp \
-		bibliopoint.cpp \
-		bibliocellule.cpp \
 		boost_voronoi.cpp \
-		boost_point.cpp \
 		boost_mainwindow.cpp \
 		glwidget.cpp
 QMAKE_TARGET  = HCI
@@ -183,7 +157,7 @@ first: all
 
 ####### Build rules
 
-$(TARGET): ui_mainwindow.h $(OBJECTS)  
+$(TARGET):  $(OBJECTS)  
 	$(LINK) $(LFLAGS) -o $(TARGET) $(OBJECTS) $(OBJCOMP) $(LIBS)
 
 Makefile: HCI.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64/qmake.conf /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -323,9 +297,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h voronoi.h point.h Cellule.h droite.h bibliopoint.h bibliocellule.h boost_voronoi.h boost_point.h voronoi_visual_utils.h boost_mainwindow.h glwidget.h $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp mainwindow.cpp voronoi.cpp point.cpp Cellule.cpp droite.cpp bibliopoint.cpp bibliocellule.cpp boost_voronoi.cpp boost_point.cpp boost_mainwindow.cpp glwidget.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.ui $(DISTDIR)/
+	$(COPY_FILE) --parents point.h Cellule.h boost_voronoi.h voronoi_visual_utils.h boost_mainwindow.h glwidget.h $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp point.cpp Cellule.cpp boost_voronoi.cpp boost_mainwindow.cpp glwidget.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -348,19 +321,9 @@ check: first
 
 compiler_rcc_make_all:
 compiler_rcc_clean:
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_boost_mainwindow.cpp moc_glwidget.cpp
+compiler_moc_header_make_all: moc_boost_mainwindow.cpp moc_glwidget.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_boost_mainwindow.cpp moc_glwidget.cpp
-moc_mainwindow.cpp: voronoi.h \
-		Cellule.h \
-		point.h \
-		droite.h \
-		bibliopoint.h \
-		bibliocellule.h \
-		boost_point.h \
-		mainwindow.h
-	/usr/lib/x86_64-linux-gnu/qt5/bin/moc $(DEFINES) -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++-64 -I/home/jonathan/M2/UIS/HCI_eyetracker/HCI -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/5 -I/usr/include/x86_64-linux-gnu/c++/5 -I/usr/include/c++/5/backward -I/usr/lib/gcc/x86_64-linux-gnu/5/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/5/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include mainwindow.h -o moc_mainwindow.cpp
-
+	-$(DEL_FILE) moc_boost_mainwindow.cpp moc_glwidget.cpp
 moc_boost_mainwindow.cpp: glwidget.h \
 		voronoi_visual_utils.h \
 		boost_mainwindow.h
@@ -372,75 +335,37 @@ moc_glwidget.cpp: voronoi_visual_utils.h \
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
-compiler_uic_make_all: ui_mainwindow.h
+compiler_uic_make_all:
 compiler_uic_clean:
-	-$(DEL_FILE) ui_mainwindow.h
-ui_mainwindow.h: mainwindow.ui
-	/usr/lib/x86_64-linux-gnu/qt5/bin/uic mainwindow.ui -o ui_mainwindow.h
-
 compiler_yacc_decl_make_all:
 compiler_yacc_decl_clean:
 compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_header_clean compiler_uic_clean 
+compiler_clean: compiler_moc_header_clean 
 
 ####### Compile
 
 main.o: main.cpp boost_mainwindow.h \
 		glwidget.h \
-		voronoi_visual_utils.h
+		voronoi_visual_utils.h \
+		boost_voronoi.h \
+		Cellule.h \
+		point.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
-mainwindow.o: mainwindow.cpp mainwindow.h \
-		voronoi.h \
-		Cellule.h \
-		point.h \
-		droite.h \
-		bibliopoint.h \
-		bibliocellule.h \
-		boost_point.h \
-		ui_mainwindow.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o mainwindow.cpp
-
-voronoi.o: voronoi.cpp voronoi.h \
-		Cellule.h \
-		point.h \
-		droite.h \
-		bibliopoint.h \
-		bibliocellule.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o voronoi.o voronoi.cpp
-
-point.o: point.cpp point.h \
-		droite.h
+point.o: point.cpp point.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o point.o point.cpp
 
 Cellule.o: Cellule.cpp Cellule.h \
-		point.h \
-		droite.h
+		point.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o Cellule.o Cellule.cpp
 
-droite.o: droite.cpp droite.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o droite.o droite.cpp
-
-bibliopoint.o: bibliopoint.cpp bibliopoint.h \
-		point.h \
-		droite.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o bibliopoint.o bibliopoint.cpp
-
-bibliocellule.o: bibliocellule.cpp bibliocellule.h \
-		point.h \
-		droite.h \
-		Cellule.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o bibliocellule.o bibliocellule.cpp
-
 boost_voronoi.o: boost_voronoi.cpp boost_voronoi.h \
-		boost_point.h
+		Cellule.h \
+		point.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o boost_voronoi.o boost_voronoi.cpp
-
-boost_point.o: boost_point.cpp boost_point.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o boost_point.o boost_point.cpp
 
 boost_mainwindow.o: boost_mainwindow.cpp boost_mainwindow.h \
 		glwidget.h \
@@ -450,9 +375,6 @@ boost_mainwindow.o: boost_mainwindow.cpp boost_mainwindow.h \
 glwidget.o: glwidget.cpp glwidget.h \
 		voronoi_visual_utils.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o glwidget.o glwidget.cpp
-
-moc_mainwindow.o: moc_mainwindow.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
 
 moc_boost_mainwindow.o: moc_boost_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_boost_mainwindow.o moc_boost_mainwindow.cpp
