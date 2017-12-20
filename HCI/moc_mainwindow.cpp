@@ -19,8 +19,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[7];
-    char stringdata0[74];
+    QByteArrayData data[9];
+    char stringdata0[87];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -30,16 +30,18 @@ struct qt_meta_stringdata_MainWindow_t {
 static const qt_meta_stringdata_MainWindow_t qt_meta_stringdata_MainWindow = {
     {
 QT_MOC_LITERAL(0, 0, 10), // "MainWindow"
-QT_MOC_LITERAL(1, 11, 18), // "primary_edges_only"
-QT_MOC_LITERAL(2, 30, 0), // ""
-QT_MOC_LITERAL(3, 31, 19), // "internal_edges_only"
-QT_MOC_LITERAL(4, 51, 6), // "browse"
-QT_MOC_LITERAL(5, 58, 5), // "build"
-QT_MOC_LITERAL(6, 64, 9) // "print_scr"
+QT_MOC_LITERAL(1, 11, 13), // "Exp_1_Clicked"
+QT_MOC_LITERAL(2, 25, 0), // ""
+QT_MOC_LITERAL(3, 26, 13), // "Exp_2_Clicked"
+QT_MOC_LITERAL(4, 40, 13), // "Exp_3_Clicked"
+QT_MOC_LITERAL(5, 54, 9), // "next_file"
+QT_MOC_LITERAL(6, 64, 6), // "browse"
+QT_MOC_LITERAL(7, 71, 5), // "build"
+QT_MOC_LITERAL(8, 77, 9) // "print_scr"
 
     },
-    "MainWindow\0primary_edges_only\0\0"
-    "internal_edges_only\0browse\0build\0"
+    "MainWindow\0Exp_1_Clicked\0\0Exp_2_Clicked\0"
+    "Exp_3_Clicked\0next_file\0browse\0build\0"
     "print_scr"
 };
 #undef QT_MOC_LITERAL
@@ -50,7 +52,7 @@ static const uint qt_meta_data_MainWindow[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       5,   14, // methods
+       7,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -58,13 +60,17 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   39,    2, 0x08 /* Private */,
-       3,    0,   40,    2, 0x08 /* Private */,
-       4,    0,   41,    2, 0x08 /* Private */,
-       5,    0,   42,    2, 0x08 /* Private */,
-       6,    0,   43,    2, 0x08 /* Private */,
+       1,    0,   49,    2, 0x08 /* Private */,
+       3,    0,   50,    2, 0x08 /* Private */,
+       4,    0,   51,    2, 0x08 /* Private */,
+       5,    0,   52,    2, 0x08 /* Private */,
+       6,    0,   53,    2, 0x08 /* Private */,
+       7,    0,   54,    2, 0x08 /* Private */,
+       8,    0,   55,    2, 0x08 /* Private */,
 
  // slots: parameters
+    QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -80,11 +86,13 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         MainWindow *_t = static_cast<MainWindow *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->primary_edges_only(); break;
-        case 1: _t->internal_edges_only(); break;
-        case 2: _t->browse(); break;
-        case 3: _t->build(); break;
-        case 4: _t->print_scr(); break;
+        case 0: _t->Exp_1_Clicked(); break;
+        case 1: _t->Exp_2_Clicked(); break;
+        case 2: _t->Exp_3_Clicked(); break;
+        case 3: _t->next_file(); break;
+        case 4: _t->browse(); break;
+        case 5: _t->build(); break;
+        case 6: _t->print_scr(); break;
         default: ;
         }
     }
@@ -116,13 +124,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 5)
+        if (_id < 7)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 5;
+        _id -= 7;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 5)
+        if (_id < 7)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 5;
+        _id -= 7;
     }
     return _id;
 }

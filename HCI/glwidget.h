@@ -10,7 +10,7 @@
 #include <boost/polygon/polygon.hpp>
 #include <boost/polygon/voronoi.hpp>
 #include <QGLWidget>
-
+#include "point.h"
 #include <iostream>
 #include <cstdio>
 using namespace std;
@@ -24,16 +24,15 @@ class GLWidget : public QGLWidget {
   explicit GLWidget(QMainWindow* parent = NULL) :
       QGLWidget(QGLFormat(QGL::SampleBuffers), parent),
       primary_edges_only_(false),
-      internal_edges_only_(false) {
+      internal_edges_only_(false), index_of_voronoi_active_(false) {
     startTimer(40);
   }
 
   QSize sizeHint() const;
-
+    bool end_exp_;
   void build(const QString& file_path);
-  void show_primary_edges_only();
-
-  void show_internal_edges_only();
+  void draw_end_experience();
+  void color_a_voronoi_cell(Point p);
 
  protected:
   void initializeGL();
@@ -92,10 +91,18 @@ class GLWidget : public QGLWidget {
   void draw_square(point_type center,int color);
   void draw_triangle(point_type center,int color);
   void draw_button(point_type center);
+  void draw_voronoi_cell();
 
   void start_color(int color);
 
   void clip_infinite_edge(const edge_type& edge, std::vector<point_type>* clipped_edge);
+
+    // Renvoi vrai si p1 est plus proche de l'origine que p2
+  bool isCloser(point_type origin, point_type p1, point_type p2);
+
+
+
+
 
   /*void sample_curved_edge(
      const edge_type& edge,
@@ -119,6 +126,11 @@ point_type retrieve_point(const cell_type& cell);
   bool brect_initialized_;
   bool primary_edges_only_;
   bool internal_edges_only_;
+  bool do_draw_voronoi_cell_;
+  int index_of_voronoi_active_;
+
+
+
 };
 
 #endif // GLWidget_H

@@ -28,4 +28,4 @@ HEADERS  += \
 
 FORMS    +=
 
-LIBS += -lCGAL -lgmp -frounding-math -lm
+LIBS +=  -frounding-math -lm

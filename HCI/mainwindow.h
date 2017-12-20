@@ -12,9 +12,11 @@
 #include <QPushButton>
 #include <QGridLayout>
 #include <QListWidget>
-
+#include <QGroupBox>
+#include <QRadioButton>
 
 #include "glwidget.h"
+#include "point.h"
 
 #include <boost/polygon/polygon.hpp>
 #include <boost/polygon/voronoi.hpp>
@@ -30,9 +32,17 @@ class MainWindow: public QWidget {
  public:
   MainWindow();
 
- private slots:
-  void primary_edges_only();
-  void internal_edges_only();
+  void write_data();
+
+
+private slots:
+
+
+
+  void Exp_1_Clicked();
+  void Exp_2_Clicked();
+  void Exp_3_Clicked();
+    void next_file();
 
   void browse();
 
@@ -40,16 +50,25 @@ class MainWindow: public QWidget {
 
   void print_scr();
 
+
+
  private:
 QGridLayout* create_file_layout();
 
   void update_file_list();
 
+  void init_file();
   QDir file_dir_;
   QString file_name_;
   GLWidget* glWidget_;
   QListWidget* file_list_;
   QLabel* message_label_;
+
+  QStringList file_name_Exp_;
+  int index_exp;
+
+
+
 };
 
 

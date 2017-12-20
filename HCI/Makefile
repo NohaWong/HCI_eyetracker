@@ -36,7 +36,7 @@ DISTNAME      = HCI1.0.0
 DISTDIR = /home/jonathan/M2/UIS/HCI_eyetracker/HCI/.tmp/HCI1.0.0
 LINK          = g++
 LFLAGS        = -m64 -Wl,-O1
-LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -lCGAL -lgmp -frounding-math -lm -lQt5OpenGL -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -L/usr/X11R6/lib64 -frounding-math -lm -lQt5OpenGL -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -343,7 +343,9 @@ compiler_clean: compiler_moc_header_clean
 
 ####### Compile
 
-main.o: main.cpp voronoi_visual_utils.h
+main.o: main.cpp mainwindow.h \
+		glwidget.h \
+		voronoi_visual_utils.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o main.cpp
 
 point.o: point.cpp point.h

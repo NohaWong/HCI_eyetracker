@@ -13,18 +13,36 @@ MainWindow::MainWindow() {
   setLayout(centralLayout);
 
   update_file_list();
-  setWindowTitle(tr("Voronoi Visualizer"));
+  setWindowTitle(tr("Pointing experience with voronoi"));
   layout()->setSizeConstraint(QLayout::SetFixedSize);
 }
 
 
-void MainWindow::primary_edges_only() {
-  glWidget_->show_primary_edges_only();
+void MainWindow::Exp_1_Clicked() {
+  file_dir_.setPath(QDir::currentPath()+"/Experience_1");
+  file_name_Exp_ = file_dir_.entryList(QDir::Files,QDir::Name);
+  index_exp=0;
+  //next_file();
+  //glWidget_->Start_Exp_1();
 }
 
-void MainWindow::internal_edges_only() {
-  glWidget_->show_internal_edges_only();
+void MainWindow::Exp_2_Clicked() {
+  file_dir_.setPath(QDir::currentPath()+"/Experience_2");;
+  file_name_Exp_ = file_dir_.entryList(QDir::Files,QDir::Name);
+  index_exp=0;
+  //next_file();
+  //glWidget_->Start_Exp_2();
 }
+
+void MainWindow::Exp_3_Clicked() {
+
+  file_dir_.setPath(QDir::currentPath()+"/Experience_3");
+  file_name_Exp_ = file_dir_.entryList(QDir::Files,QDir::Name);
+  index_exp=0;
+  //next_file();
+  //glWidget_->Start_Exp_3();
+}
+
 
 void MainWindow::browse() {
   QString new_path = QFileDialog::getExistingDirectory(
@@ -66,13 +84,24 @@ QGridLayout* MainWindow::create_file_layout() {
                         this,
                         SLOT(build()));
 
-    QCheckBox* primary_checkbox = new QCheckBox("Show primary edges only.");
-    connect(primary_checkbox, SIGNAL(clicked()),
-        this, SLOT(primary_edges_only()));
 
-    QCheckBox* internal_checkbox = new QCheckBox("Show internal edges only.");
-    connect(internal_checkbox, SIGNAL(clicked()),
-        this, SLOT(internal_edges_only()));
+    // GroupBox to start the experiences.
+
+    QGroupBox *groupBoxExp = new QGroupBox("Select experience");
+    QRadioButton *Exp_1_radio = new QRadioButton("1er experience");
+    QRadioButton *Exp_2_radio = new QRadioButton("2eme experience");
+    QRadioButton *Exp_3_radio = new QRadioButton("3eme experience");
+
+    connect(Exp_1_radio, SIGNAL(clicked()), this, SLOT(Exp_1_Clicked()));
+    connect(Exp_2_radio, SIGNAL(clicked()), this, SLOT(Exp_2_Clicked()));
+    connect(Exp_3_radio, SIGNAL(clicked()), this, SLOT(Exp_3_Clicked()));
+
+    QVBoxLayout *vbox = new QVBoxLayout;
+    vbox->addWidget(Exp_1_radio);
+    vbox->addWidget(Exp_2_radio);
+    vbox->addWidget(Exp_3_radio);
+    groupBoxExp->setLayout(vbox);
+
 
     QPushButton* browse_button =
         new QPushButton(tr("Browse Input Directory"));
@@ -83,12 +112,20 @@ QGridLayout* MainWindow::create_file_layout() {
     connect(print_scr_button, SIGNAL(clicked()), this, SLOT(print_scr()));
     print_scr_button->setMinimumHeight(50);
 
+
+    QPushButton* start_button = new QPushButton(tr("Next Test - Start"));
+    connect(start_button, SIGNAL(clicked()), this, SLOT(next_file()));
+    start_button->setMinimumHeight(50);
+
     file_layout->addWidget(message_label_, 0, 0);
     file_layout->addWidget(file_list_, 1, 0);
-    file_layout->addWidget(primary_checkbox, 2, 0);
-    file_layout->addWidget(internal_checkbox, 3, 0);
-    file_layout->addWidget(browse_button, 4, 0);
-    file_layout->addWidget(print_scr_button, 5, 0);
+    file_layout->addWidget(groupBoxExp,2,0);
+    //file_layout->addWidget(primary_checkbox, 2, 0);
+    //file_layout->addWidget(internal_checkbox, 3, 0);
+    file_layout->addWidget(start_button, 4, 0);
+    file_layout->addWidget(browse_button, 5, 0);
+
+    //file_layout->addWidget(print_scr_button, 5, 0);
 
     return file_layout;
 }
@@ -104,4 +141,31 @@ void MainWindow::update_file_list() {
         file_list_->addItem(it->fileName());
     }
     file_list_->setCurrentRow(0);
+}
+
+
+
+
+
+
+void MainWindow::next_file(){
+
+
+    if(index_exp < file_name_Exp_.size()){
+         glWidget_->build(file_dir_.filePath(file_name_Exp_[0]));
+        //Point p = Point(2.0,3.0);
+        //glWidget_->color_a_voronoi_cell(p);
+    }
+    else{
+
+        glWidget_->end_exp_=true;
+    }
+    //glWidget_->end_exp_=true;
+    index_exp++;
+
+}
+
+// Voir pour les data
+void MainWindow::write_data(){
+
 }

@@ -10,7 +10,7 @@ QSize GLWidget::sizeHint() const {
 void GLWidget::build(const QString& file_path) {
   // Clear all containers.
   clear();
-
+  end_exp_=false;
   // Read data.
   read_data(file_path);
 
@@ -39,7 +39,44 @@ void GLWidget::build(const QString& file_path) {
   // Update view port.
   update_view_port();
 }
+///TODO FAIRE ATTENTION CA FAIT CRASH
+//Find the closer center of p and draw the cell of the center.
+void GLWidget::color_a_voronoi_cell(Point p){
 
+    point_type test_point(p.x,p.y);
+    unsigned int i;
+    index_of_voronoi_active_=0;
+
+    for(i=1; i<point_data_.size();i++){
+        if(isCloser(test_point,point_data_[i],point_data_[index_of_voronoi_active_])){
+            index_of_voronoi_active_=i;
+        }
+    }
+    do_draw_voronoi_cell_=true;
+
+}
+
+
+
+
+//TODO
+void GLWidget::draw_end_experience()
+{
+
+
+    clear();
+    start_color(0);
+    glLineWidth(5.0f);
+    glBegin(GL_LINES);
+    glVertex2f(-size_form_, -size_form_);
+    glVertex2f(size_form_, size_form_);
+    glVertex2f(-size_form_, size_form_);
+    glVertex2f(size_form_, -size_form_);
+    glEnd();
+}
+
+
+/*
 void GLWidget::show_primary_edges_only() {
   primary_edges_only_ ^= true;
 }
@@ -47,7 +84,7 @@ void GLWidget::show_primary_edges_only() {
 void GLWidget::show_internal_edges_only() {
   internal_edges_only_ ^= true;
 }
-
+*/
 
 
 // Protected
@@ -62,11 +99,17 @@ void GLWidget::initializeGL() {
 void GLWidget::paintGL() {
   qglClearColor(QColor::fromRgb(255, 255, 255));
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  if(end_exp_){
+      draw_end_experience();
+  }
+  {
+      draw_points();
+      //draw_segments();
+      draw_vertices();
+      draw_edges();
+      //draw_voronoi_cell();
+  }
 
-  draw_points();
-  //draw_segments();
-  draw_vertices();
-  draw_edges();
 }
 
 void GLWidget::resizeGL(int width, int height) {
@@ -347,6 +390,38 @@ void GLWidget::draw_button(point_type center)
     glEnd();
 }
 
+void GLWidget::draw_voronoi_cell()
+{
+
+    if(!do_draw_voronoi_cell_)
+        return;
+
+
+    glColor3f(0.0f, 0.0f, 0.0f);
+    glLineWidth(1.7f);
+    cell_type cell = vd_.cells()[index_of_voronoi_active_];
+    edge_type* edge = cell.incident_edge();
+
+    do{
+
+      std::vector<point_type> samples;
+      if (!edge->is_finite()) {
+        clip_infinite_edge(*edge, &samples);
+      } else {
+        point_type vertex0(edge->vertex0()->x(), edge->vertex0()->y());
+        samples.push_back(vertex0);
+        point_type vertex1(edge->vertex1()->x(), edge->vertex1()->y());
+        samples.push_back(vertex1);
+      }
+      glBegin(GL_LINE_STRIP);
+      for (std::size_t i = 0; i < samples.size(); ++i) {
+        point_type vertex = deconvolve(samples[i], shift_);
+        glVertex2f(vertex.x(), vertex.y());
+      }
+      glEnd();
+    }while(edge->rot_next());
+}
+
 void GLWidget::start_color(int color)
 {
     switch(color){
@@ -423,6 +498,8 @@ void GLWidget::clip_infinite_edge(
         point_type(edge.vertex1()->x(), edge.vertex1()->y()));
   }
 }
+
+
 /*
 void GLWidget::sample_curved_edge(
     const edge_type& edge,
@@ -460,3 +537,15 @@ GLWidget::segment_type GLWidget::retrieve_segment(const cell_type& cell) {
   return segment_data_[index];
 }
 */
+
+
+bool GLWidget::isCloser(GLWidget::point_type origin, GLWidget::point_type p1, GLWidget::point_type p2)
+{
+    double dist_p1 = p1.x()-origin.x() *  p1.x()-origin.x() + p1.y()-origin.y() *  p1.y()-origin.y();
+    double dist_p2 = p2.x()-origin.x() *  p2.x()-origin.x() + p2.y()-origin.y() *  p2.y()-origin.y();
+    return dist_p1 < dist_p2;
+}
+
+
+
+
