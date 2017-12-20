@@ -16,17 +16,15 @@ SOURCES +=\
     main.cpp \
     point.cpp \
     Cellule.cpp \
-    boost_voronoi.cpp \
-    boost_mainwindow.cpp \
-    glwidget.cpp
+    glwidget.cpp \
+    mainwindow.cpp
 
 HEADERS  += \
     point.h \
     Cellule.h \
-    boost_voronoi.h \
     voronoi_visual_utils.h \
-    boost_mainwindow.h \
-    glwidget.h
+    glwidget.h \
+    mainwindow.h
 
 FORMS    +=
 

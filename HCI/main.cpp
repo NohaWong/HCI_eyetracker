@@ -46,8 +46,7 @@ int main(int argc, char *argv[])
 
 #include <iostream>
 #include <vector>
-#include "boost_mainwindow.h"
-#include "boost_voronoi.h"
+#include "mainwindow.h"
 #include <QMessageBox>
 #include <QtOpenGL/QGLWidget>
 #include <QtGui/QtGui>
@@ -63,7 +62,7 @@ using namespace boost::polygon;
 
 int main(int argc, char* argv[]) {
   QApplication app(argc, argv);
-  boost_MainWindow window;
+  MainWindow window;
   window.show();
   return app.exec();
 

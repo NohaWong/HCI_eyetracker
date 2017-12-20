@@ -24,11 +24,11 @@ using namespace boost::polygon;
 
 
 
-class boost_MainWindow: public QWidget {
+class MainWindow: public QWidget {
   Q_OBJECT
 
  public:
-  boost_MainWindow();
+  MainWindow();
 
  private slots:
   void primary_edges_only();

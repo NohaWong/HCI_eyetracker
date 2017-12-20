@@ -338,11 +338,12 @@ void GLWidget::draw_button(point_type center)
 {
     start_color(4);
     glLineWidth(1.7f);
-    glBegin(GL_QUADS);
+    glBegin(GL_LINE_STRIP);
     glVertex2f(center.x()-size_form_*2, center.y()-size_form_*3/2);
     glVertex2f(center.x()+size_form_*2, center.y()-size_form_*3/2);
     glVertex2f(center.x()+size_form_*2, center.y()+size_form_*3/2);
     glVertex2f(center.x()-size_form_*2, center.y()+size_form_*3/2);
+    glVertex2f(center.x()-size_form_*2, center.y()-size_form_*3/2);
     glEnd();
 }
 

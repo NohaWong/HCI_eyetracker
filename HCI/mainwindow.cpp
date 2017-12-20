@@ -1,8 +1,8 @@
-#include "boost_mainwindow.h"
+#include "mainwindow.h"
 
 
 
-boost_MainWindow::boost_MainWindow() {
+MainWindow::MainWindow() {
   glWidget_ = new GLWidget();
   file_dir_ = QDir(QDir::currentPath(), tr("*.txt"));
   file_name_ = tr("");
@@ -18,15 +18,15 @@ boost_MainWindow::boost_MainWindow() {
 }
 
 
-void boost_MainWindow::primary_edges_only() {
+void MainWindow::primary_edges_only() {
   glWidget_->show_primary_edges_only();
 }
 
-void boost_MainWindow::internal_edges_only() {
+void MainWindow::internal_edges_only() {
   glWidget_->show_internal_edges_only();
 }
 
-void boost_MainWindow::browse() {
+void MainWindow::browse() {
   QString new_path = QFileDialog::getExistingDirectory(
       0, tr("Choose Directory"), file_dir_.absolutePath());
   if (new_path.isEmpty()) {
@@ -36,7 +36,7 @@ void boost_MainWindow::browse() {
   update_file_list();
 }
 
-void boost_MainWindow::build() {
+void MainWindow::build() {
   file_name_ = file_list_->currentItem()->text();
   QString file_path = file_dir_.filePath(file_name_);
   message_label_->setText("Building...");
@@ -45,7 +45,7 @@ void boost_MainWindow::build() {
   setWindowTitle(tr("Voronoi Visualizer - ") + file_path);
 }
 
-void boost_MainWindow::print_scr() {
+void MainWindow::print_scr() {
   if (!file_name_.isEmpty()) {
     QImage screenshot = glWidget_->grabFrameBuffer(true);
     QString output_file = file_dir_.absolutePath() + tr("/") +
@@ -55,7 +55,7 @@ void boost_MainWindow::print_scr() {
 }
 
 
-QGridLayout* boost_MainWindow::create_file_layout() {
+QGridLayout* MainWindow::create_file_layout() {
     QGridLayout* file_layout = new QGridLayout;
 
     message_label_ = new QLabel("Double click item to build voronoi diagram:");
@@ -93,7 +93,7 @@ QGridLayout* boost_MainWindow::create_file_layout() {
     return file_layout;
 }
 
-void boost_MainWindow::update_file_list() {
+void MainWindow::update_file_list() {
     QFileInfoList list = file_dir_.entryInfoList();
     file_list_->clear();
     if (file_dir_.count() == 0) {
